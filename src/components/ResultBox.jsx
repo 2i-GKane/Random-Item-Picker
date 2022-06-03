@@ -1,4 +1,5 @@
 import "../loader.css";
+import React from "react"
 
 function updateResultBox(value){
     document.getElementById("result-box").value = "Result: " + value;
