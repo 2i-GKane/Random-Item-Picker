@@ -4,7 +4,7 @@ import "./styling.css"
 
 import FormBody from "./components/FormBody";
 import { ResultBox, updateResultBox } from "./components/ResultBox";
-import { CandidateInput, getValidItems } from "./components/CandidateInput";
+import { CandidateInput, getValidItems, setCandidates } from "./components/CandidateInput";
 
 const displayButton = (shouldDisplay) => {
   const button = document.getElementById("btn-draw");
@@ -53,6 +53,7 @@ String.prototype.replaceAt = function(index, replacement) {
 
 function App() {
   const [drawing, setDrawing] = useState(false);
+  const [autoRemoving, setAutoRemoving] = useState(false);
 
   useEffect(() => {
     updateResultBox("N/A")
@@ -74,8 +75,6 @@ function App() {
     validChars += "123456789_ ";
 
     let currentReveal = "";
-
-    console.log(validChars)
     let currentSearchCharIndex = 0;
 
     for(var i = 0; i < item.length; i++){
@@ -106,28 +105,51 @@ function App() {
 
   const drawItem = () => {
     if(!drawing){
-      displayButton(false)
+      let items = getValidItems();
+      if(items.length >= 1){
+        displayButton(false)
       displayLoader(true)
       setDrawing((isDrawing) => !isDrawing);
 
       console.log("Now drawing!");
-      let items = getValidItems()
-
-      console.log(items);
 
       let chosen = chooseRandom(items);
-      let replceStr = "";
-      console.log(replceStr.replaceAt(0, "a"))
+      
       runAnimation(chosen, 60, 15).then(() => {
         displayLoader(false);
         displayButton(true);
 
         updateResultBox(chosen);
         setDrawing((isDrawing) => !isDrawing);
-      })
+
+        if(autoRemoving){
+          const itemIndex = items.indexOf(chosen);
+
+          items.splice(itemIndex, 1);
+          setCandidates(items);
+        }
+       })
+      } else {
+        alert("You must provide some items into the input box!")
+        updateResultBox("N/A");
+      }
       
     }
     
+  }
+
+  const toggleAutoRemove = () => {
+    const btn = document.getElementById("btn-autoremove");
+    let btnText = "";
+
+    if(!autoRemoving){
+      btnText = "Enabled"
+    } else {
+      btnText = "Disabled"
+    }
+
+    btn.innerText = btnText;
+    setAutoRemoving((currentAutoRemoving) => !currentAutoRemoving);
   }
 
   return (
@@ -135,7 +157,7 @@ function App() {
         <div className="form-body">
             <FormBody />
             <ResultBox button={<button onClick={() => drawItem()} id="btn-draw">Draw</button>}/>
-            <CandidateInput />
+            <CandidateInput button={<button onClick={() => toggleAutoRemove()} id="btn-autoremove">Disabled</button>}/>
         </div>
     </div>
   );
