@@ -12,6 +12,7 @@ const ResultBox = (props) => {
             <input disabled size="50" id="result-box"/>
             
             <div id="parent-loader" className="lds-ellipsis"><div id="loader-1" hidden={true}></div><div id="loader-2" hidden={true}></div><div id="loader-3" hidden={true}></div><div id="loader-4" hidden={true}></div></div>
+            {props.singleRemoveBtn}
             {props.button}
             
             

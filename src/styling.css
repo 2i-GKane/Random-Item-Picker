@@ -50,6 +50,12 @@ body {
     background: #292929;
 }
 
+.result-box--removesingle {
+    padding-right: 50px;
+    position: relative;
+    color: #0066ff;
+}
+
 .result-box > button {
     position: absolute;
     font-size: 1.2rem;
@@ -63,6 +69,11 @@ body {
     cursor: pointer;
     background: #292929;
     color: white;
+}
+
+#btn-single-remove {
+    margin-right: 68px;
+    display: none;
 }
 
 button:hover{

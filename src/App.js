@@ -17,6 +17,16 @@ const displayButton = (shouldDisplay) => {
   }
 }
 
+const displaySingleRemoveBtn = (shouldDisplay) => {
+  const button = document.getElementById("btn-single-remove");
+
+  if(!shouldDisplay){
+    button.style.display = "none"
+  } else {
+    button.style.display = "block"
+  }
+}
+
 const displayLoader = (shouldDisplay) => {
   const loader1 = document.getElementById("loader-1");
   const loader2 = document.getElementById("loader-2");
@@ -55,9 +65,12 @@ String.prototype.replaceAt = function(index, replacement) {
 function App() {
   const [drawing, setDrawing] = useState(false);
   const [autoRemoving, setAutoRemoving] = useState(false);
+  const [selectedItem, setSelectedItem] = useState("");
 
   useEffect(() => {
-    updateResultBox("N/A")
+    updateResultBox("N/A");
+
+    displaySingleRemoveBtn(false);
   }, [])
 
   const chooseRandom = (items) => {
@@ -103,12 +116,13 @@ function App() {
     }
 
   }
-
+  
   const drawItem = () => {
     if(!drawing){
       let items = getValidItems();
       if(items.length >= 1){
         displayButton(false)
+        displaySingleRemoveBtn(false);
       displayLoader(true)
       setDrawing((isDrawing) => !isDrawing);
 
@@ -121,6 +135,7 @@ function App() {
         displayButton(true);
 
         updateResultBox(chosen);
+        setSelectedItem(chosen);
         setDrawing((isDrawing) => !isDrawing);
 
         if(autoRemoving){
@@ -128,7 +143,7 @@ function App() {
 
           items.splice(itemIndex, 1);
           setCandidates(items);
-        }
+        } else displaySingleRemoveBtn(true);
        })
       } else {
         alert("You must provide some items into the input box!")
@@ -153,11 +168,23 @@ function App() {
     setAutoRemoving((currentAutoRemoving) => !currentAutoRemoving);
   }
 
+  const removeItem = (item) => {
+    let items = getValidItems();
+    const itemIndex = items.indexOf(item);
+
+    if(itemIndex !== -1){
+      items.splice(itemIndex, 1);
+      setCandidates(items);
+    }
+    
+  }
+
   return (
     <div className="container">
         <div className="form-body">
             <FormBody />
-            <ResultBox button={<button onClick={() => drawItem()} id="btn-draw">Draw</button>}/>
+            <ResultBox button={<button onClick={() => drawItem()} id="btn-draw">Draw</button>} 
+            singleRemoveBtn={<button onClick={() => {removeItem(selectedItem); displaySingleRemoveBtn(false)}} id="btn-single-remove">Remove</button>}/>
             <CandidateInput button={<button onClick={() => toggleAutoRemove()} id="btn-autoremove">Disabled</button>}/>
         </div>
     </div>
