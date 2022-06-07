@@ -86,7 +86,7 @@ function App() {
   async function runAnimation(item, nextCharDelay, displayDelay) {
     let validChars = String.fromCharCode(...Array(123).keys()).slice(97);
     validChars += validChars.toUpperCase();
-    validChars += "123456789_ ";
+    validChars += "123456789_ '";
 
     let currentReveal = "";
     let currentSearchCharIndex = 0;
@@ -129,10 +129,26 @@ function App() {
       console.log("Now drawing!");
 
       let chosen = chooseRandom(items);
+      let revTxt = chosen;
+
+      let nextCharDelay = 60;
+      let displayDelay = 15;
+
+      let containsRick = false;
+      if(revTxt.toLowerCase().includes("rick")){
+          nextCharDelay = 30;
+          displayDelay = 7;
+
+          revTxt = "Never gon' give you up";
+          containsRick = true;
+      }
       
-      runAnimation(chosen, 60, 15).then(() => {
+      runAnimation(revTxt, nextCharDelay, displayDelay).then(async () => {
         displayLoader(false);
         displayButton(true);
+
+        if(containsRick) await delay(250);
+        else await delay(50);
 
         updateResultBox(chosen);
         setSelectedItem(chosen);
