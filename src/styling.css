@@ -141,4 +141,8 @@ input {
     width:100%;
   }
 
+[contentEditable=true]:empty:not(:focus):before{
+    content:attr(ph-text)
+}
+
 
